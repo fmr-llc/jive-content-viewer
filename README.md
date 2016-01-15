@@ -88,29 +88,11 @@ Creating a Content Viewer Table of Contents (TOC) document
 -----------------------------------------------------------
 * Create a document in a place that users will have at least read access.
 * Click the Bullet List button in the editor.
-* Create a bullet list of items that will make up the Table of Contents.  Each item in the list must be a hyper-link, which is what the viewer will load into the view pane when that TOC item is clicked.  The list can be indented to create sub-menu items.  The left aligned items will be the outer most items in the table.  Items that are indented will be sub-menu items of the above outer item.  You can have (at most) two levels of indention (sub-menus).  For instance, the following bullet list:
-<p></p>
-  * Menu item 1
-  * Menu item 2
-    * Menu item 2.1
-      * Menu item 2.1.1
-      * Menu item 2.1.2
-    * Menu item 2.2
-  * Menu item 3
-    * Menu item 3.1
-    * Menu item 3.2
-<p>&nbsp;&nbsp;&nbsp;&nbsp; will generate the following Table of Contents:</p>
-<p>Menu item 1</p>
-<p>Menu item 2</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;Menu item 2.1</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Menu item 2.1.1</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Menu item 2.1.2</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;Menu item 2.2</p>
-<p>Menu item 3</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;Menu item 3.1</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;Menu item 3.2</p>
-* You can include hyperlinks to Jive content (documents, uploaded files, discussions, blogs, etc.), containers (group, project, and space overview, activity, content etc), People, and external links.  The viewer recognizes most item type stored in Jive, and makes a "best effort" to load them into the viewer.  It should be noted that Jive uses Ajax loaded objects to format and populate several page types after the initial load.  This means that the initial page load does not contain the completed view of the content, so the viewer does not have everything it needs to display the page in the viewer the way it normally does when you go to the page.  Examples of this are Task Lists, Calendars, certain parts of Activity pages, etc.  People Profile pages are heavily modified to display useful information in the viewer.  Microsoft Office content (Word documents, Excel files, etc.) that have a preview will have their document preview displayed.  Overview pages are displayed including all widgets.
-* After entering the bullet items, making sure each line has a hyperlink, and indenting the list to represent the menu levels, there is one more step I find useful.  The Jive editor puts formatting around internal content.  It is very cumbersome trying to predict everything the Jive editor can possibly do behind the scenes, so I find it best to remove any of that formatting prior to publishing the document.  Highlight the entire bullet list, and then click the Remove Formatting button in the editor several times.  This usually removes anything that causes the Table of Contents not to process correctly.
+* Create a bullet list of items that will make up the Table of Contents.  Each item in the list must be a hyper-link, which is what the viewer will load into the view pane when that TOC item is clicked.  The list can be indented to create sub-menu items.  The left aligned items will be the outer most items in the table.  Items that are indented will be sub-menu items of the above outer item.  You can have (at most) two levels of indention (sub-menus).
+* You can create hyperlinks to Jive content (documents, uploaded files, discussions, blogs, etc.), containers (group, project, and space overview, activity, content etc), People, and external links.  The viewer recognizes most item type stored in Jive, and makes a "best effort" to load them into the viewer.  It should be noted that Jive uses Ajax loaded objects to format and populate several page types after the initial load.  This means that the initial page load does not contain the completed view of the content, so the viewer does not have everything it needs to display the page in the viewer the way it normally does when you go to the page.  Examples of this are Task Lists, Calendars, certain parts of Activity pages, etc.  People Profile pages are heavily modified to display useful information in the viewer.  Microsoft Office content (Word documents, Excel files, etc.) that have a preview will have their document preview displayed.  Overview pages are displayed including all widgets.
+* Bullet items can be pictures as well, but make sure they are small thumbnail sized pictures, as they will be inside of a button in the TOC.  Also, pictures need to be hyperlinks as well for the TOC to process correctly.
+* After entering the bullet items, making sure each line has a hyperlink, and indenting the list to represent the menu levels, there is one more step I find useful.  The Jive editor puts formatting around internal content.  It is very cumbersome trying to predict everything the Jive editor can possibly do behind the scenes, so I find it best to remove any of that formatting prior to publishing the document.  Highlight the entire bullet list, and then click the Remove Formatting button in the editor several times.  This usually removes anything that causes the Table of Contents not to process correctly.  Here is an example TOC setup document:
+<img src="docs/content-viewer-toc.jpg" />
 * Once your TOC document is completed, publish the document and copy the URL.
 
 Build the Content Viewer
