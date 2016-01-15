@@ -1,0 +1,89 @@
+<!--
+Jive - Accordion Widget
+
+Copyright (c) 2015 Fidelity Investments
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+FILE DESCRIPTION
+This is the builder application that presents a front end to users and allows
+them to configure an accordion widget with a setup document.  The user needs 
+to complete the configuration and generate the widget code.  This code is then 
+pasted into an HTML Widget on an Overview page to create the accordion.
+
+WIDGET DESCRIPTION
+This Jive HTML widget loads in a Jive setup document with a two column table.
+The table content is parsed into a Bootstrap accordion.  This allows users to 
+expand and contract the panels to show and hide the contained information.
+-->
+<meta name="fidosreg" content="b764a0a9536448345dc227af95e192521d337b5e4c3560c859b89ecd0407004a">
+
+<script src='/api/core/v3/attachments/file/1466657/data'></script>
+<script>
+
+var jquery_content_id = "1466657";
+var library_loader_content_id = "1435000";
+
+var $j = jQuery.noConflict();
+$j("head").append('<scr'+'ipt src="/api/core/v3/attachments/file/' + library_loader_content_id + '/data"></scr'+'ipt>');
+</script>
+<script>
+$j.load_library('bootstrap.css');
+$j.load_library('bootstrap-theme.css');
+$j.load_library('content_viewer_widget_builder.css');
+$j.load_library('bootstrap.js');
+$j.load_library('content_viewer_widget_builder.js');
+</script>
+
+<div id='mainContainer'>
+
+	<div id='builderTitle' class='page-header'> 
+		<h2>Content Viewer Widget Builder</h2> 
+	</div>
+
+	<div id='tocDiv'>
+		<p style='color:#2AABD2;'>Please paste the URL of your Table of Content Document</p>
+		<form id="tocForm" name="tocForm" onsubmit="return false;">
+			<input id="docURLInput" type="text"  placeholder="Enter Document URL"/>
+			<br/>
+		</form>
+		<div id='URLStatus' style='color:red;'></div>
+		<br/>
+		<input type="checkbox" name="tocIcons" id="tocIcons" value=true checked="checked"> Show TOC Icons</input>
+		<br/>
+		<br/>
+		<input type="checkbox" name="tocHover" id="tocHover" value=true checked="checked"> Show TOC People and Place Hover Popups</input>
+		<br/>
+		<br/>
+		<button id='nextButton' class='btn btn-info btn-small' onclick='finish()' disabled>Next</button>
+	</div>
+
+	<div id = 'generatedCodeDiv'>
+		<h4> Copy table of content code: </h4>
+		<div id='tocCode'>
+			<textarea id='tocCodeBox' readonly></textarea>
+			<h4>and paste it into an HTML Widget on your Overview page </h4>
+			<p>Recommendation: Use a thin column for this widget </p>
+			<br/>
+		</div>
+		<h4> Copy viewer code: </h4>
+		<div id='viewerCode'>
+			<textarea id='viewerCodeBox' readonly></textarea>
+			<h4>and paste it into an HTML Widget on your Overview page </h4>
+			<p>Recommendation: Use a wide column for this widget </p>
+			<br/>
+		</div>
+		<button class='btn btn-info btn-small' onclick='startOver()'>Start Over</button>
+	</div> 
+
+</div>
+
