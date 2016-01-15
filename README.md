@@ -92,7 +92,7 @@ Creating a Content Viewer Table of Contents (TOC) document
 * You can create hyperlinks to Jive content (documents, uploaded files, discussions, blogs, etc.), containers (group, project, and space overview, activity, content etc), People, and external links.  The viewer recognizes most item type stored in Jive, and makes a "best effort" to load them into the viewer.  It should be noted that Jive uses Ajax loaded objects to format and populate several page types after the initial load.  This means that the initial page load does not contain the completed view of the content, so the viewer does not have everything it needs to display the page in the viewer the way it normally does when you go to the page.  Examples of this are Task Lists, Calendars, certain parts of Activity pages, etc.  People Profile pages are heavily modified to display useful information in the viewer.  Microsoft Office content (Word documents, Excel files, etc.) that have a preview will have their document preview displayed.  Overview pages are displayed including all widgets.
 * Bullet items can be pictures as well, but make sure they are small thumbnail sized pictures, as they will be inside of a button in the TOC.  Also, pictures need to be hyperlinks as well for the TOC to process correctly.
 * After entering the bullet items, making sure each line has a hyperlink, and indenting the list to represent the menu levels, there is one more step I find useful.  The Jive editor puts formatting around internal content.  It is very cumbersome trying to predict everything the Jive editor can possibly do behind the scenes, so I find it best to remove any of that formatting prior to publishing the document.  Highlight the entire bullet list, and then click the Remove Formatting button in the editor several times.  This usually removes anything that causes the Table of Contents not to process correctly.  Here is an example TOC setup document:
-<img src="docs/content-viewer-toc.jpg" />
+<p><img src="docs/content-viewer-toc.jpg" /></p>
 * Once your TOC document is completed, publish the document and copy the URL.
 
 Build the Content Viewer
@@ -115,9 +115,8 @@ Build the Content Viewer
 
 Usage
 -----
-Once the Content Viewer is setup and operational, users can click on the items in the Table of Content and the content will be loaded into the viewer pane.
-
-If changes are need to the Table of Contents, the setup document and hyperlinked pages can be edited and the changes will be picked up the next refresh.
+<p>Once the Content Viewer is setup and operational, users can click on the items in the Table of Content and the content will be loaded into the viewer pane.</p>
+<p>If changes are need to the Table of Contents, the setup document and hyperlinked pages can be edited and the changes will be picked up the next refresh.</p>
 
 Issues
 ------
