@@ -50,7 +50,7 @@ You have now updated the Library Loader in your Jive community with the library 
 Install the Content Viewer Widget Builder application
 -----------------------------------------------------
 * Use the Content Lookup widget to search for "jQuery Library".  Copy the Content ID.  It should be a number like "694224"
-* Look in the accordion widget archive on your computer and edit the "content_viewer_widget_builder.html" file.
+* Look in the content viewer widget archive on your computer and edit the "content_viewer_widget_builder.html" file.
 * Find the jquery_content_id and replace the zero in the quotes with the Content ID you just copied.  The result should look similar to:
 ```
 	var jquery_content_id = "694224";
@@ -88,9 +88,10 @@ Creating a Content Viewer Table of Contents (TOC) document
 -----------------------------------------------------------
 * Create a document in a place that users will have at least read access.
 * Click the Bullet List button in the editor.
-* Create a bullet list of items that will make up the Table of Contents.  Each item in the list must be a hyper-link, which is what the viewer will load into the view pane when that TOC item is clicked.  The list can be indented to create sub-menu items.  The left aligned items will be the outer most items in the table.  Items that are indented will be sub-menu items of the above outer item.  You can have (at most) two levels of indention (sub-menus).
-* You can create hyperlinks to Jive content (documents, uploaded files, discussions, blogs, etc.), containers (group, project, and space overview, activity, content etc), People, and external links.  The viewer recognizes most item type stored in Jive, and makes a "best effort" to load them into the viewer.  It should be noted that Jive uses Ajax loaded objects to format and populate several page types after the initial load.  This means that the initial page load does not contain the completed view of the content, so the viewer does not have everything it needs to display the page in the viewer the way it normally does when you go to the page.  Examples of this are Task Lists, Calendars, certain parts of Activity pages, etc.  People Profile pages are heavily modified to display useful information in the viewer.  Microsoft Office content (Word documents, Excel files, etc.) that have a preview will have their document preview displayed.  Overview pages are displayed including all widgets.
-* Bullet items can be pictures as well, but make sure they are small thumbnail sized pictures, as they will be inside of a button in the TOC.  Also, pictures need to be hyperlinks as well for the TOC to process correctly.
+* Create a bullet list of items that will make up the Table of Contents.  Each item in the list must be a hyper-link, which is what the viewer will load into the view pane when that TOC item is clicked.
+* The list can be indented to create sub-menu items.  The left aligned items will be the outer most items in the table.  Items that are indented will be sub-menu items of the above outer item.  You can have (at most) two levels of indention (sub-menus).
+* You can create hyperlinks to Jive content (documents, uploaded files, discussions, blogs, etc.), containers (group, project, and space overview, activity, content etc), People, and external links.  The viewer recognizes most item type stored in Jive, and makes a "best effort" to load them into the viewer.  People Profile pages are heavily modified to display useful information in the viewer.  Microsoft Office content (Word documents, Excel files, etc.) that have a preview will have their document preview displayed.  Overview pages are displayed including all widgets.  It should be noted that Jive uses Ajax loaded objects to format and populate several page types after the initial load.  This means that the initial page load does not contain the completed view of the content, so the viewer does not have everything it needs to display the page in the viewer the way it normally does when you go to the page.  Examples of this are Task Lists, Calendars, certain parts of Activity pages, etc.  
+* Bullet items can contain pictures as well, but make sure they are small thumbnail sized pictures, as they will be inside of a button in the TOC.  Also, pictures need to be hyperlinks as well for the TOC to process correctly.
 * After entering the bullet items, making sure each line has a hyperlink, and indenting the list to represent the menu levels, there is one more step I find useful.  The Jive editor puts formatting around internal content.  It is very cumbersome trying to predict everything the Jive editor can possibly do behind the scenes, so I find it best to remove any of that formatting prior to publishing the document.  Highlight the entire bullet list, and then click the Remove Formatting button in the editor several times.  This usually removes anything that causes the Table of Contents not to process correctly.  Here is an example TOC setup document:
 <p><img src="docs/content-viewer-toc.jpg" /></p>
 * Once your TOC document is completed, publish the document and copy the URL.
@@ -98,18 +99,19 @@ Creating a Content Viewer Table of Contents (TOC) document
 Build the Content Viewer
 ------------------------
 * Go to the Overview page that you installed the Content Viewer Builder application.
-* Paste the TOC document URL you copied in the section above.
+* Paste the TOC document URL you copied in the previous section.
 * Check the "Show TOC Icons" checkox if you want the small jive icons for internal content, or uncheck it if you want them removed.
+* Check the "Show TOC People and Place Hover Popups" checkox if you want the Jive formatted information popups to appear when hovering over your internal hyperlinks, or uncheck it if you do not.
 * Click Next and the code for two separate widgets will be generated.  Copy the top code for the TOC first.
 * Go to the overview page you want to put the Content Viewer.
 * Drag an HTML Widget into a column.  This widget will become the Table of Contents, so it works best in a narrow column.
-* Edit the widget.  Paste the code you just copied.
+* Edit the widget.  Paste the code from the TOC Widget.
 * Click on Save Properties.
-* Go back to the Content Viewer Builder.  Copy the code in the bottom area.
+* Go back to the Content Viewer Builder.  Copy the Viewer code in the bottom area.
 * Go back to the overview page with the Content Viewer you are building.
 * Drag another HTML widget into another column on your page.  This will become the viewer, so a wide column works best.
 * Edit the widget.
-* Paste the code you just copied.
+* Paste the Viewer code you just copied.
 * Click Save Properties.
 * Publish the page.
 

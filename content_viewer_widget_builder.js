@@ -75,7 +75,7 @@ function finish(){
 								+ "var showIcons=" + showTOCIcons + ";\n"
 								+ "var showHovers=" + showTOCHovers + ";\n"
 								+ "</scr"+"ipt>\n"
-								+ "<div id='mainContent'></div>\n" );
+								+ "<div id='ContentViewerContainer'></div>\n" );
 	$j('#generatedCodeDiv').show();
 	resize();
 }
@@ -91,4 +91,8 @@ function startOver(){
 
 function resize(){
 	setTimeout(resizeMe,100);
+}
+
+function init() {
+	resize();
 }
