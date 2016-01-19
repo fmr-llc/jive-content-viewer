@@ -40,6 +40,8 @@ var content_preview_class = '#jive-body-main section.jive-content-body div#docve
 var content_photoalbum_class = '#jive-body-main div#jive-photo-album-content';
 var content_area_class = '#jive-body-main section.jive-content-body';
 var newContentEndTags = "</div>\n</div>\n</div>"
+var ContentViewerContainerContainer = null;
+var loadRequest = null;
 
 /*
  * Set a resizeMe function to intercept calls from other HTML widgets within overview pages that are displayed.
@@ -51,7 +53,7 @@ var newContentEndTags = "</div>\n</div>\n</div>"
 window.jive = {};
 window.jive.widget = {};
 window.jive.widget.resizeMe=function(c){
-	$j(c, $j('#mainContent', parentIframe[0].contentDocument)).each(function(){
+	$j(c, $j('#ContentViewerContainer', parentIframe[0].contentDocument)).each(function(){
 		var e=$j(this).contents().find("body");
 		$j(this).css({height:0+"px"});
 		if(e.length>0){
@@ -59,6 +61,7 @@ window.jive.widget.resizeMe=function(c){
 			$j(this).css({height:d+"px"});
 		}
 	});
+	resizeMe();
 }
 
 //IE8 hack
@@ -81,56 +84,61 @@ window.onload = function() {
     }
 }
 
-/*
- * .active-item refers to the link that is clicked.
- * .open-menu refers to the menu that is opened.
- */
+// This is embedded in an iframe, lets make all $j requests go to the parent
 $j(function(){
-	// This is embedded in an iframe, lets make all $j requests go to the parent
 	$j = parent.$j;
-}); //$j function end
+});
 
+// Load the hyperlink of the object clicked
 function loadPage(page, null1, null2){
 	var newContent = "<div id='jive-widget-content' class='clearfix'>\n\t<div id='jive-body-layout-l'>\n\t\t<div class='jive-body-layout-l1'>\n\t\t\t<div style='display:block' id='jive-widget-container_1'>";
 	//Display loading spinner
-	$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = '<p style="width:99%;text-align:center;"><img alt="" src="/images/jive-image-loading.gif" style="width:100px;height=100px;"></p>';
+	$j('#ContentViewerContainer', parentIframe[0].contentDocument)[0].innerHTML = '<p style="width:99%;text-align:center;"><img alt="" src="/images/jive-image-loading.gif" style="width:100px;height=100px;"></p>';
 	// If the page is internal to this Jive instance
 	if (page == "javascript:void(0)" || page.substring(0,window.parent._jive_base_absolute_url.length) == window.parent._jive_base_absolute_url){
-		$j.ajax({
+		// If a previous ajax call (search) was made, abort it
+	    if(loadRequest) {
+	        loadRequest.abort();
+	        loadRequest = null
+	    }
+	    //set the search variable so that only its return is used and all previous returns are ignored
+	    loadRequest = $j.ajax({
 			type: "GET",
 			url: page,			
 			success: function (data) {
+				var refreshDelay = 250;
 				if(data){
 					//console.log('found: ' + $j( data ).find(widget_content).length + ' : ' + $j( data ).find(content_activity_class).length + ' : ' + $j( data ).find(content_area_class).length + ' : ' + $j( data ).find(content_list_class).length + ' : ' + $j( data ).find(content_list_class2).length);
 					if( $j( data ).find(widget_content).length ) {
 						// Container Overview pages
-						$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = $j( data ).find(widget_content).html();
+						ContentViewerContainerContainer.innerHTML = $j( data ).find(widget_content).html();
+						refreshDelay = 5000;
 					} else if ( $j( data ).find(content_activity_class).length ) {
 						// Activity pages
-						$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = $j( data ).find(content_activity_class).html();
+						ContentViewerContainerContainer.innerHTML = $j( data ).find(content_activity_class).html();
 					} else if ( data.search('viewerURL:   \"') > -1 ) {
 						// Content that has the document preview will have the preview iframe generated and shown
 						var viewerURL = data.substr(data.search('viewerURL:   \"') + 14);
 						viewerURL = viewerURL.substr(0, viewerURL.search('"'));
 						if ( viewerURL.search("-1") > -1) {
-							$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = '<p><h1>Document has been deleted!</h1></p>';
+							ContentViewerContainerContainer.innerHTML = '<p><h1>Document has been deleted!</h1></p>';
 						} else {
-							$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = '<iframe id="docverse-viewer-frame" width="100%" height="850" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" src="' + viewerURL + '"></iframe>';
+							ContentViewerContainerContainer.innerHTML = '<iframe id="docverse-viewer-frame" width="100%" height="850" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" src="' + viewerURL + '"></iframe>';
 						}
 					} else if ( $j( data ).find(content_photoalbum_class).length ) {
 						// Jive content
 						var album = $j( data ).find(content_photoalbum_class).html();
 						$j(album).find("[id='jive-viewphotos-form']").remove();
-						$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = album;
+						ContentViewerContainerContainer.innerHTML = album;
 					} else if ( $j( data ).find(content_area_class).length ) {
 						// Jive content
-						$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = $j( data ).find(content_area_class).html();
+						ContentViewerContainerContainer.innerHTML = $j( data ).find(content_area_class).html();
 					} else if ( $j( data ).find(content_list_class).length ) {
 						// Listing pages (like Content, Search, etc.)
-						$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = $j( data ).find(content_list_class).html();
+						ContentViewerContainerContainer.innerHTML = $j( data ).find(content_list_class).html();
 					} else if ( $j( data ).find(content_list_class2).length ) {
 						// Alternate spelled listing screens (Tasks, People, etc.)
-						$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = $j( data ).find(content_list_class2).html();
+						ContentViewerContainerContainer.innerHTML = $j( data ).find(content_list_class2).html();
 					} else if ( $j( data ).find(content_profile_class).length ) {
 						// Jive's profile page has several Ajax driven frames, so we cannot display it as is...the below will format it
 						var profile = $j( data ).find(content_profile_class);
@@ -197,11 +205,11 @@ function loadPage(page, null1, null2){
 						});
 
 						// Set the Viewer display area
-						$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = 
+						ContentViewerContainerContainer.innerHTML = 
 							profile.html() +
 							'<div style="height: 200px; float: left; margin-bottom: 12px; background-color: #FAFAFA; padding: 22px 25px 22px 25px;">' + details.html() + '</div>';
 					}
-					setTimeout(resizeMe, 250);
+					setTimeout(resizeMe, refreshDelay);
 				}
 			},
 			complete: function(){
@@ -209,7 +217,8 @@ function loadPage(page, null1, null2){
 		});
 	} else {
 		// The pae is external, so iframe it in
-		$j('#mainContent', parentIframe[0].contentDocument)[0].innerHTML = '<iframe src="' + page + '" width="99%" height="500px;" />';
+		ContentViewerContainerContainer.innerHTML = '<iframe src="' + page + '" width="99%" height="500px;" />';
+		resizeMe();
 	}
 } //loadPage
 
@@ -247,6 +256,9 @@ function applyBrowserBasedCss(){
 		$j("a.jive-link-project-small").removeClass('jive-link-project-small');
 		$j("a.jive-link-community-small").removeClass('jive-link-community-small');
 		$j("a.jive-link-external-small").removeClass('jive-link-external-small');
+	}
+
+	if ( ! showHovers ) {
 		$j("a.jivecontainerTT-hover-container").removeClass('jivecontainerTT-hover-container');
 		$j("a.jiveTT-hover-user").removeClass('jiveTT-hover-user');
 	}
@@ -488,7 +500,7 @@ function initMenu() {
 } //initMenu
 
 $j(document).ready(function() {
+	ContentViewerContainerContainer = $j('#ContentViewerContainer', parentIframe[0].contentDocument)[0];
+
 	loadTOC();
-	//Give 1 second for everything to load in, then trigger a resize
-	setTimeout(resizeMe,1000);
 }); // $j(document).ready function end
