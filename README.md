@@ -143,5 +143,5 @@ If you would like to contribute to this project, please check out [Contributing]
 
 License
 -------
-(c) 2015 Fidelity Investments
+(c) 2015-2016 Fidelity Investments
 Licensed under the [Apache License](docs/LICENSE), Version 2.0
