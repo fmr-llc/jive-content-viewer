@@ -8,7 +8,7 @@ The [Content Lookup](https://github.com/fmr-llc/jive-content-lookup) widget inst
 
 Upload Libraries
 ----------------
-* Extract the content viewer widget zip archive to your local computer.
+* Download the content viewer widget zip archive and extract it to your local computer.
 * Log into your Jive community.
 * Navigate to the upload location for your library files.
 * Create an Uploaded File in the Library location of your Jive community.  Drag the file "content_viewer_widget.css" to the file section of the upload.  Set the file name to "Content Viewer Widget CSS Library", put a description of your choosing, tag it, set the authors, and make sure it is being published to the correct Library location.  Click Publish.
@@ -22,7 +22,7 @@ Update Library Loader
 * Download a copy of the "Library Loader" file from your community.  Open it for editing.
 * Go back to the Content Lookup widget and search for "Content Viewer Widget".  You should see the four library files you uploaded to your community above.
 * Find the search result for "Content Viewer Widget CSS Library" and copy its Content ID.  It should be a number like 694225.
-* Update the library_loader.js file line for "content_viewer_widget_.css" and update the content ID variable (it should be 0 before updating) to the Content ID you just copied.  The result should look similar to:
+* Update the library_loader.js file line for "content_viewer_widget.css" and update the content ID variable (it should be 0 before updating) to the Content ID you just copied.  The result should look similar to:
 ```
 	libraries['content_viewer_widget.css'] = { contentID: '694225' };
 ```
