@@ -1,7 +1,7 @@
 /*
 Jive - Accordion Widget
 
-Copyright (c) 2015 Fidelity Investments
+Copyright (c) 2015-2016 Fidelity Investments
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -71,4 +71,55 @@ expand and contract the panels to show and hide the contained information.
 
 .panel-heading:hover {
 	cursor: pointer;
+}
+
+.color-select {
+	float: left;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+
+#unselected-item {
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	text-decoration: none;
+	font-weight: bold;
+	color: #069;
+}
+
+#hover-item {
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	text-decoration: none;
+	font-weight: bold;
+	color: #069;
+}
+
+#selected-item {
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	text-decoration: none;
+	font-weight: bold;
+	color: #069;
+}
+
+#fontSize {
+	width: 5%;
+}
+
+#fontSize_slider {
+	width: 75%;
+	display: inline;
+}
+
+#borderWidth {
+	width: 5%;
+}
+
+#borderWidth_slider {
+	width: 75%;
+	display: inline;
 }

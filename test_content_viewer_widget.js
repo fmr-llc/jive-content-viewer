@@ -93,8 +93,7 @@ $j(function(){
 function loadPage(page, null1, null2){
 	var newContent = "<div id='jive-widget-content' class='clearfix'>\n\t<div id='jive-body-layout-l'>\n\t\t<div class='jive-body-layout-l1'>\n\t\t\t<div style='display:block' id='jive-widget-container_1'>";
 	// If the page is internal to this Jive instance
-	if ( page == "javascript:void(0)" ||
-	     page.substring(0,window.parent._jive_base_absolute_url.length) == window.parent._jive_base_absolute_url ) {
+	if (page == "javascript:void(0)" || page.substring(0,window.parent._jive_base_absolute_url.length) == window.parent._jive_base_absolute_url){
 		// If a previous ajax call (search) was made, abort it
 	    if(loadRequest) {
 	        loadRequest.abort();
@@ -216,9 +215,6 @@ function loadPage(page, null1, null2){
 			complete: function(){
 			}
 		});
-	}  else	if ( page == window.parent._jive_base_absolute_url + '/' ||
-		         page == window.parent._jive_base_absolute_url.replace('https:','http:') + '/'){
-		return false;
 	} else {
 		// The pae is external, so iframe it in
 		ContentViewerContainerContainer.innerHTML = '<iframe src="' + page + '" width="99%" height="500px;" />';
@@ -260,24 +256,11 @@ function applyBrowserBasedCss(){
 		$j("a.jive-link-project-small").removeClass('jive-link-project-small');
 		$j("a.jive-link-community-small").removeClass('jive-link-community-small');
 		$j("a.jive-link-external-small").removeClass('jive-link-external-small');
-		$j(".toc-menu-container  ul  li  a").css({ 
-			'padding':'5px 5px 5px 5px'
-		});
-	}else {
-		$j(".toc-menu-container  ul  li  a").css({ 
-			'padding':'5px 5px 5px 20px'
-		});
 	}
 
 	if ( ! showHovers ) {
 		$j("a.jivecontainerTT-hover-container").removeClass('jivecontainerTT-hover-container');
 		$j("a.jiveTT-hover-user").removeClass('jiveTT-hover-user');
-	}
-
-	if (tocLayout == "horizontal") {
-		$j('.toc-menu ul > li').css({
-			'float': 'left'
-		});
 	}
 
 	// Add caret to all items with a sub-menu
@@ -296,28 +279,164 @@ function applyBrowserBasedCss(){
 		'float': 'right'
 	});
 
-	$j('.toc-menu ul > li').css({
-		'list-style': 'none',
-		'margin-right': '2px'
+	$j(".toc-menu").css({
+		'padding':'3px'
 	});
 
-	$j('.toc-menu ul > li > a').css({
-		'border': borderWidth + ' solid ' + unselectedBorderColor,
-		'border-radius':'3px',
-		'display': 'block',
-		'padding': '8px 15px',
-		'text-decoration': 'none',
-		'font-weight': 'bold',
-		'font-size': fontSize,
-		'background-color': unselectedBackgroundColor,
-		'color': unselectedTextColor
-	});
+	if (tocLayout == "horizontal") {
+		$j('.toc-menu-container ul').css({
+			'width': '99%',
+			'float': 'left',
+			'margin': '0 0 3em 0',
+			'padding': 0,
+			'list-style': 'none',
+			'background-color': '#f2f2f2'
+		});
 
-	// Indent all sub-menus
+		$j('.toc-menu-container ul li').css({
+			'float': 'left',
+			'list-style': 'none'
+			'border': '1px solid #ccc',
+			'border-radius':'3px'
+		});
+
+		$j('.toc-menu-container ul li a').css({
+			'display': 'block',
+			'padding': '8px 15px',
+			'text-decoration': 'none',
+			'font-weight': 'bold',
+			'color': '#069',
+			'border-right': '.5px solid #ccc'
+		});
+
+		$j('.toc-menu-container ul li a:hover').css({
+			'color': '#c00',
+			'background-color': '#f2f2f2'
+		});
+	} else {
+
+		//The Unordered list tags in the container
+		$j(".toc-menu-container ul").css({
+			'list-style':'none', 
+			'margin':'0', 'padding':'0', 
+			'text-decoration':'none', 
+			'style':'block',
+		});
+
+		$j(".toc-menu-container li > ul ul").css({  
+			'border-left':'1px solid #E0E0E0'
+		});
+
+		$j(".toc-menu-container ul:last-child").css({
+			'list-style':'none', 
+			'margin':'0',
+			'padding':'0', 
+			'text-decoration':'none', 
+			'style':'block',
+		});
+
+
+		$j(".toc-menu-list  li").css({
+			'list-style':'none'
+		});
+
+		//First Level
+		$j(".toc-menu-list > li:first-child").css({
+			'list-style':'none', 
+			'margin-right':'3px',
+			'margin-left':'3px',
+			'border':'0.5 solid #E0E0E0'
+		});
+
+		$j(".toc-menu-list > li").css({
+			'list-style':'none', 
+			'margin-right':'3px',
+			'margin-left':'3px',
+			'margin-bottom':'0',
+			'border':'0.5 solid #E0E0E0',
+			'style':'block'
+		});
+
+		$j(".toc-menu-list > li > a").css({ 
+			'border-bottom':'1px solid #E0E0E0', 
+			'color':'#999', 
+			'display':'block', 
+		});
+									
+		//Second Level List Items
+		$j(".toc-menu-list > li > ul ").css({
+			'list-style':'none',
+			'border-bottom':'1px solid #E0E0E0'
+		});
+
+		$j(".toc-menu-list > li > ul > li:last-child").css({
+			'list-style':'none',
+			'margin-bottom':'5px'
+		});
+
+		//All links
+		$j(".toc-menu-container  ul  li  a").css({ 
+			'border-bottom':'1px solid #E0E0E0', 
+			'color':'#999', 
+			'display':'block'
+		});
+	}
+
+	if ( ! showIcons ) {
+		$j(".toc-menu-container  ul  li  a").css({ 
+			'padding':'5px 5px 5px 5px',
+		});
+	}else {
+		$j(".toc-menu-container  ul  li  a").css({ 
+			'padding':'5px 5px 5px 20px',
+		});
+	}
+
 	$j(".toc-menu-container  ul  li > ul").css({
 		'margin':'1px 1px 1px 20px'
 	});
 
+	$j(".toc-menu-container  ul  li  a:active").css({
+		'background':'##CEF0FF'
+	});
+
+	if(isIE == true) {
+		$j(".toc-menu-list").css({
+			'background':'#fff',
+			'color':'#999',
+			'border': '1px solid #E0E0E0',
+			'padding':'2px'
+		});
+						
+		//All children links
+		$j(".toc-menu-list > li > ul > li  a").css({
+			'border': '0.5px solid  #BDBDBD'
+		}); 
+	} else {
+		//Entire Container
+		$j(".toc-menu-list").css({
+			'background':'#fff',
+			'color':'#999',
+			'-webkit-box-shadow':'  0px 0px 1px 1px #BDBDBD', 
+			'-moz-box-shadow':'  0px 0px 1px 1px #BDBDBD', 
+			'box-shadow':' 0px 0px 1px 1px #BDBDBD', 
+			'-webkit-border-radius':'5px',
+			'-moz-border-radius':'5px', 
+			'border-radius':'5px',
+			'padding':'2px'
+		});
+
+		//All children links
+		$j(".toc-menu-list > li > ul > li  a").css({
+			'-webkit-box-shadow':' inset  0px 0px 4px #BDBDBD', 
+			'-moz-box-shadow':' inset 0px 0px 4px #BDBDBD', 
+			'box-shadow':' inset 0px 0px 4px #BDBDBD',
+			'-webkit-border-radius':'5px',
+			'-moz-border-radius':'5px', 
+			'border-radius':'5px',
+			'background-position':'4%'
+		}); 
+	}
 } //applyBrowserBasedCss
 
 function replaceTextWithLinks(){
@@ -353,9 +472,7 @@ function initMenu() {
 		}
 		
         $j(".active-item").css({
-			'border': borderWidth + ' solid ' + unselectedBorderColor,
-			'background-color': unselectedBackgroundColor,
-			'color': unselectedTextColor
+    		'background-color': '#FFFFFF !important'
 		}).removeClass('active-item'); 	// clear active sub menu items
         $j('.open-menu').next().slideUp('normal')
         $j('.open-menu').removeClass('open-menu'); 	// if there is a reference to the previous item, close it
@@ -364,78 +481,40 @@ function initMenu() {
         $j(this).addClass('open-menu'); 		// add tracking class
 		$j(this).addClass('active-item'); 		//Tracking clicked item
 		$j(this).css({
-			'border': borderWidth + ' solid ' +selectedBorderColor,
-			'background-color': selectedBackgroundColor,
-			'color': selectedTextColor
+    		'background-color': '#F0F0F0 !important'
 		}).addClass('active-item');
         $j(this).next().slideDown('normal'); 		//slides down the a tag
 		loadPage($j(this).attr('href'), $j(this).attr('alt'), $j(this));
         return false;
     });
 
-     // handle submenu item clicks
-    $j(".toc-menu-list a").hover (
-    	function(e){
-			e.preventDefault();
-			if ( ! $j(this).hasClass('active-item') ) {
-				$j(this).css({
-					'border': borderWidth + ' solid ' + hoverBorderColor,
-					'background-color': hoverBackgroundColor,
-					'color': hoverTextColor
-				}).addClass('hover-item'); 	// clear active sub menu items
-			}
-	        return true;
-	    },
-	    function(e){
-			e.preventDefault();
-			if ( ! $j(this).hasClass('active-item') && $j(this).hasClass('hover-item') ) {
-				$j(this).css({
-					'border': borderWidth + ' solid ' + unselectedBorderColor,
-					'background-color': unselectedBackgroundColor,
-					'color': unselectedTextColor
-				}).removeClass('hover-item'); 	// clear active sub menu items
-			}
-	        return true;
-	    }
-	); 
-
-   // handle submenu item clicks
-    $j(".toc-menu-list ul > li > a").click (function(e){
+    // handle submenu item clicks
+    $j(".toc-menu-list ul  li  a").click (function(e){
 		e.preventDefault();
 		if ($j(this).hasClass('sub-open-menu')) {
 			$j('.sub-open-menu').next().slideUp('normal');
 			$j('.sub-open-menu').removeClass('sub-open-menu');
 			$j(".active-item").css({
-				'border': borderWidth + ' solid ' + unselectedBorderColor,
-				'background-color': unselectedBackgroundColor,
-				'color': unselectedTextColor
+	    		'background-color': '#FFFFFF !important'
 			}).removeClass('active-item'); 	// clear active sub menu items
 			$j(this).css({
-				'border': borderWidth + ' solid ' +selectedBorderColor,
-				'background-color': selectedBackgroundColor,
-				'color': selectedTextColor
+	    		'background-color': '#F0F0F0 !important'
 			}).addClass('active-item');
 			loadPage($j(this).attr('href'), $j(this).attr('alt'), $j(this));
 			return false;
 		} else if($j(this).hasClass('g-open-menu')) {
 			$j(".active-item").css({
-				'border': borderWidth + ' solid ' + unselectedBorderColor,
-				'background-color': unselectedBackgroundColor,
-				'color': unselectedTextColor
+	    		'background-color': '#FFFFFF !important'
 			}).removeClass('active-item'); 	// clear active sub menu items
 			$j(this).css({
-				'border': borderWidth + ' solid ' +selectedBorderColor,
-				'background-color': selectedBackgroundColor,
-				'color': selectedTextColor
+	    		'background-color': '#F0F0F0 !important'
 			}).addClass('active-item');
 			loadPage($j(this).attr('href'), $j(this).attr('alt'), $j(this));
 			return false
 		}
 		
 		$j(".active-item").css({
-			'border': borderWidth + ' solid ' + unselectedBorderColor,
-			'background-color': unselectedBackgroundColor,
-			'color': unselectedTextColor
+    		'background-color': '#FFFFFF !important'
 		}).removeClass('active-item'); 	// clear active sub menu items
         $j('.sub-open-menu').next().slideUp('normal');
         $j('.sub-open-menu').removeClass('sub-open-menu');
@@ -443,9 +522,7 @@ function initMenu() {
 		$j(this).parent().find('li a').addClass('g-open-menu');
 		$j(this)
 		$j(this).css({
-			'border': borderWidth + ' solid ' +selectedBorderColor,
-			'background-color': selectedBackgroundColor,
-			'color': selectedTextColor
+    		'background-color': '#F0F0F0 !important'
 		}).addClass('active-item');
 		$j(this).next().slideDown('normal');
 		loadPage($j(this).attr('href'), $j(this).attr('alt'), $j(this));
@@ -457,54 +534,6 @@ function initMenu() {
 } //initMenu
 
 $j(document).ready(function() {
-	if (typeof tocLayout === 'undefined') {
-		tocLayout = 'vertical';
-	}
-
-	if (typeof unselectedTextColor === 'undefined') {
-		unselectedTextColor = '#069';
-	}
-
-	if (typeof unselectedBackgroundColor === 'undefined') {
-		unselectedBackgroundColor = '#ffffff';
-	}
-
-	if (typeof unselectedBorderColor === 'undefined') {
-		unselectedBorderColor = '#BDBDBD';
-	}
-
-	if (typeof hoverTextColor === 'undefined') {
-		hoverTextColor = '#069';
-	}
-
-	if (typeof hoverBackgroundColor === 'undefined') {
-		hoverBackgroundColor = '#ffffff';
-	}
-
-	if (typeof hoverBorderColor === 'undefined') {
-		hoverBorderColor = '#BDBDBD';
-	}
-
-	if (typeof selectedTextColor === 'undefined') {
-		selectedTextColor = '#069';
-	}
-
-	if (typeof selectedBackgroundColor === 'undefined') {
-		selectedBackgroundColor = '#f0f0f0';
-	}
-
-	if (typeof selectedBorderColor === 'undefined') {
-		selectedBorderColor = '#BDBDBD';
-	}
-
-	if (typeof fontSize === 'undefined') {
-		fontSize = '12px';
-	}
-
-	if (typeof borderWidth === 'undefined') {
-		borderWidth = '1px';
-	}
-
 	ContentViewerContainerContainer = null;
 	for (i=0; i < parentIframe.length; i++) {
 		if ( $j('#ContentViewerContainer', parentIframe[i].contentDocument)[0] != undefined) {
