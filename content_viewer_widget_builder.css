@@ -1,5 +1,5 @@
 /*
-Jive - Accordion Widget
+Jive - Content Viewer Widget
 
 Copyright (c) 2015-2016 Fidelity Investments
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,11 @@ FILE DESCRIPTION
 This is the CSS library that styles the Accordion Widget Builder app.
 
 WIDGET DESCRIPTION
-This Jive HTML widget loads in a Jive setup document with a two column table.
-The table content is parsed into a Bootstrap accordion.  This allows users to 
-expand and contract the panels to show and hide the contained information.
+This Jive HTML widget is driven by a modified Table of Contents widget.  When a TOC entry 
+is clicked, the click event is intercepted and the associated hyperlink is loaded and 
+formatted for display in the defined viewer area on the Overview page.  This allows a rich 
+set of content to be accessed on a single page without having to set up complex navigation 
+between pages.
 */
 #fidosreg {
 	string-set: 'b764a0a9536448345dc227af95e192521d337b5e4c3560c859b89ecd0407004a';
