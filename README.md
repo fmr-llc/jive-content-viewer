@@ -1,5 +1,6 @@
 Jive - Content Viewer Widget
 ============================
+<p><img src="docs/content-viewer.jpg" /></p>
 The Content Viewer widget is a great tool for surfacing content from multiple locations on a single overview page.  This is a [Jive](https://community.jivesoftware.com/welcome) HTML widget project that uses two HTML widgets on a page.  One becomes the Table of Contents pane, and the other becomes the display panel.  Clicking an item in the TOC loads the content into the display panel for viewing.  Users can serve themselves to the content listed in the TOC and you do not have to worry with complicated menus and navigation bars to keep your sites up to date and connected.  The widget is maintained using a single Jive document with a bullet list representing the TOC.  Changes can be made to the TOC document itself to add, modify, and delete entries, as well as modifying the linked documents and sites contained in the TOC to edit the resulting content displayed.
 
 Prerequisite
@@ -46,6 +47,30 @@ Update Library Loader
 * Drag the updated file from your computer to the file section of the uploaded file.  Click Publish.
 
 You have now updated the Library Loader in your Jive community with the library files needed to run the Content Viewer widget.
+
+Install Spectrum
+----------------
+[Spectrum Color Picker](https://github.com/bgrins/spectrum) is a library that several of these widget projects will use for customizing your preferences.  You will need to check if you have this installed from a previous widget installation.  If not, you need to obtain a copy of this library and store specific files in your Jive instance for use.  Follow these instructions to check for status, and download the latest version and upload to your community if required:
+* Use the Content Lookup widget to search for "Spectrum JavaScript Library".  If the file is returned in the search, you can assume it is already installed, and can skip the rest of this section.  Otherwise, continue with the below steps to download Spectrum and install it in your Jive installation.
+* Click [Spectrum download](https://github.com/bgrins/spectrum/archive/master.zip) to get the latest version or use a version used by your front end developers.
+* (Optional) Perform any required security checks on the downloaded code.
+* Extract the zip file to your computer.
+* Log into your Jive community.
+* Navigate to the upload location for your library files.
+* Create an Uploaded File in the Library location of your Jive community.  Look in the Spectrum archive on your computer.  Expand the dist folder.  Drag the file "spectrum.css" to the file section of the upload.  Set the file name to "Spectrum CSS Library", put a description of your choosing, tag it, set the authors, and make sure it is being published to the correct Library location.  Click Publish.
+* Create another Uploaded File in the Library location of your Jive community.  Go back to the Spectrum archive.  Drag the file "spectrum.js" to the file section of the upload.  Set the file name to "Spectrum JavaScript Library", put a description of your choosing, tag it, set the authors, and make sure it is being published to the correct Library location.  Click Publish.
+* Use the Content Lookup widget to search for "Spectrum".  You should see results for the CSS and Javascript libraries uploaded above.
+* Find the search result for "Spectrum CSS Library" and copy its Content ID.  It should be a number like 694227.
+* Update the library_loader.js file line for "spectrum.css" and update the content ID variable (it should be 0 before updating) to the Content ID.  If a line for "spectrum.css" is not present in your Library Loader, then just add the line below with the correct Content ID in it.  The result should look similar to:
+```
+	libraries['spectrum.css'] = { contentID: '694227' };
+```
+* Find the search result for "Spectrum JavaScript Library" and copy its Content ID.  It should be a number like 694228.
+* Update the library_loader.js file line for "spectrum.js" and update the content ID variable (it should be 0 before updating) to the Content ID.  The result should look similar to:
+```
+	libraries['spectrum.js'] = { contentID: '694228' };
+```
+* Save the changes to the library_loader.js file on your computer.
 
 Install the Content Viewer Widget Builder application
 -----------------------------------------------------

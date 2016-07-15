@@ -29,8 +29,6 @@ var fidosreg_id = 'b764a0a9536448345dc227af95e192521d337b5e4c3560c859b89ecd04070
 // Add parent window jquery reference
 var parentDocument = window.parent.document;
 var parentIframe = $j("iframe",parentDocument);
-var jive_body = '#jive-body';
-var widget_container = '#jive-widget-container';
 var widget_content = '#jive-widget-content';
 var content_activity_class = '#jive-body div#streamAndDatablocks';
 var content_profile_class = '#jive-body header';
@@ -39,7 +37,6 @@ var content_list_class2 = '#jive-body div.j-colum-wrap-l';
 var content_preview_class = '#jive-body-main section.jive-content-body div#docverse-viewer-holder';
 var content_photoalbum_class = '#jive-body-main div#jive-photo-album-content';
 var content_area_class = '#jive-body-main section.jive-content-body';
-var newContentEndTags = "</div>\n</div>\n</div>"
 var ContentViewerContainerContainer = null;
 var loadRequest = null;
 
@@ -53,12 +50,11 @@ var loadRequest = null;
 window.jive = {};
 window.jive.widget = {};
 window.jive.widget.resizeMe=function(c){
-	$j(c, $j('#ContentViewerContainer', parentIframe[0].contentDocument)).each(function(){
-		var e=$j(this).contents().find("body");
+	$j(c, $j('#ContentViewerContainer' + contentViewerIndex, parentIframe[0].contentDocument)).each(function(){
+		var body = $j(this).contents().find("body");
 		$j(this).css({height:0+"px"});
-		if(e.length>0){
-			var d=e[0].scrollHeight;
-			$j(this).css({height:d+"px"});
+		if(body.length > 0){
+			$j(this).css({height:body[0].scrollHeight+"px"});
 		}
 	});
 	resizeMe();
@@ -92,6 +88,8 @@ $j(function(){
 // Load the hyperlink of the object clicked
 function loadPage(page, null1, null2){
 	var newContent = "<div id='jive-widget-content' class='clearfix'>\n\t<div id='jive-body-layout-l'>\n\t\t<div class='jive-body-layout-l1'>\n\t\t\t<div style='display:block' id='jive-widget-container_1'>";
+	var refreshDelay = 150;
+
 	// If the page is internal to this Jive instance
 	if ( page == "javascript:void(0)" ||
 	     page.substring(0,window.parent._jive_base_absolute_url.length) == window.parent._jive_base_absolute_url ) {
@@ -102,18 +100,17 @@ function loadPage(page, null1, null2){
 	    }
 		//Display loading spinner
 		ContentViewerContainerContainer.innerHTML = '<p style="width:99%;text-align:center;"><img alt="" src="/images/jive-image-loading.gif" style="width:100px;height=100px;"></p>';
+		resizeMe();
 	    //set the search variable so that only its return is used and all previous returns are ignored
 	    loadRequest = $j.ajax({
 			type: "GET",
 			url: page,			
 			success: function (data) {
-				var refreshDelay = 250;
 				if(data){
 					//console.log('found: ' + $j( data ).find(widget_content).length + ' : ' + $j( data ).find(content_activity_class).length + ' : ' + $j( data ).find(content_area_class).length + ' : ' + $j( data ).find(content_list_class).length + ' : ' + $j( data ).find(content_list_class2).length);
 					if( $j( data ).find(widget_content).length ) {
 						// Container Overview pages
 						ContentViewerContainerContainer.innerHTML = $j( data ).find(widget_content).html();
-						refreshDelay = 5000;
 					} else if ( $j( data ).find(content_activity_class).length ) {
 						// Activity pages
 						ContentViewerContainerContainer.innerHTML = $j( data ).find(content_activity_class).html();
@@ -210,10 +207,13 @@ function loadPage(page, null1, null2){
 							profile.html() +
 							'<div style="height: 200px; float: left; margin-bottom: 12px; background-color: #FAFAFA; padding: 22px 25px 22px 25px;">' + details.html() + '</div>';
 					}
-					setTimeout(resizeMe, refreshDelay);
 				}
 			},
+			error: function(){
+				setTimeout(resizeMe, refreshDelay);
+			},
 			complete: function(){
+				setTimeout(resizeMe, refreshDelay);
 			}
 		});
 	}  else	if ( page == window.parent._jive_base_absolute_url + '/' ||
@@ -221,10 +221,10 @@ function loadPage(page, null1, null2){
 		return false;
 	} else {
 		// The pae is external, so iframe it in
-		ContentViewerContainerContainer.innerHTML = '<iframe src="' + page + '" width="99%" height="500px;" />';
-		resizeMe();
+		ContentViewerContainerContainer.innerHTML = '<iframe id="externalIframe" src="' + page + '" width="99%" height="800px;" />';
+		setTimeout(resizeMe, refreshDelay);
 	}
-} //loadPage
+} //loadPage 00BQK50Y55VXE79156B
 
 function loadTOC() {
 	$j.ajax({
@@ -232,7 +232,7 @@ function loadTOC() {
 		url: sourceURL,		
 		success: function (data) {
 			if(data){
-				$j('.toc-menu-container').html( 
+				$j('.toc-menu-container' + contentViewerIndex).html( 
 					'<div class="toc-menu">'
 					+ $j('.jive-rendered-content', data).html()
 					+ '</div>' );
@@ -246,45 +246,45 @@ function loadTOC() {
 
 function applyBrowserBasedCss(){
 
-	$j('.toc-menu > ul').addClass('toc-menu-list');
+	$j('.toc-menu-container' + contentViewerIndex + ' .toc-menu > ul').addClass('toc-menu-list');
 
 	if ( ! showIcons ) {
-		$j("a.jive-link-thread-small").removeClass('jive-link-thread-small');
-		$j("a.jive-link-wiki-small").removeClass('jive-link-wiki-small');
-		$j("a.jive-link-poll-small").removeClass('jive-link-poll-small');
-		$j("a.jive-link-blog-small").removeClass('jive-link-blog-small');
-		$j("a.jive-link-profile-small").removeClass('jive-link-profile-small');
-		$j("a.jive-link-idea").removeClass('jive-link-idea');
-		$j("a.jive-link-event").removeClass('jive-link-event');
-		$j("a.jive-link-socialgroup-small").removeClass('jive-link-socialgroup-small');
-		$j("a.jive-link-project-small").removeClass('jive-link-project-small');
-		$j("a.jive-link-community-small").removeClass('jive-link-community-small');
-		$j("a.jive-link-external-small").removeClass('jive-link-external-small');
-		$j(".toc-menu-container  ul  li  a").css({ 
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-thread-small').removeClass('jive-link-thread-small');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-wiki-small').removeClass('jive-link-wiki-small');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-poll-small').removeClass('jive-link-poll-small');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-blog-small').removeClass('jive-link-blog-small');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-profile-small').removeClass('jive-link-profile-small');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-idea').removeClass('jive-link-idea');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-event').removeClass('jive-link-event');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-socialgroup-small').removeClass('jive-link-socialgroup-small');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-project-small').removeClass('jive-link-project-small');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-community-small').removeClass('jive-link-community-small');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jive-link-external-small').removeClass('jive-link-external-small');
+		$j('.toc-menu-container' + contentViewerIndex + '  ul  li  a').css({ 
 			'padding':'5px 5px 5px 5px'
 		});
 	}else {
-		$j(".toc-menu-container  ul  li  a").css({ 
+		$j('.toc-menu-container' + contentViewerIndex + '  ul  li  a').css({ 
 			'padding':'5px 5px 5px 20px'
 		});
 	}
 
 	if ( ! showHovers ) {
-		$j("a.jivecontainerTT-hover-container").removeClass('jivecontainerTT-hover-container');
-		$j("a.jiveTT-hover-user").removeClass('jiveTT-hover-user');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jivecontainerTT-hover-container').removeClass('jivecontainerTT-hover-container');
+		$j('.toc-menu-container' + contentViewerIndex + ' a.jiveTT-hover-user').removeClass('jiveTT-hover-user');
 	}
 
 	if (tocLayout == "horizontal") {
-		$j('.toc-menu ul > li').css({
+		$j('.toc-menu-container' + contentViewerIndex + ' .toc-menu ul > li').css({
 			'float': 'left'
 		});
 	}
 
 	// Add caret to all items with a sub-menu
-	$j(".toc-menu-container li:has(ul) > a").each(function() {
+	$j('.toc-menu-container' + contentViewerIndex + '  li:has(ul) > a').each(function() {
 		$j(this).html( $j(this).html() + '<b class="caret"></b>');
 	});
-	$j(".caret").css({
+	$j('.toc-menu-container' + contentViewerIndex + ' .caret').css({
 		'display':'inline-block',
 		'width': 0,
 		'height': 0,
@@ -296,12 +296,12 @@ function applyBrowserBasedCss(){
 		'float': 'right'
 	});
 
-	$j('.toc-menu ul > li').css({
+	$j('.toc-menu-container' + contentViewerIndex + ' .toc-menu ul > li').css({
 		'list-style': 'none',
 		'margin-right': '2px'
 	});
 
-	$j('.toc-menu ul > li > a').css({
+	$j('.toc-menu-container' + contentViewerIndex + ' .toc-menu ul > li > a').css({
 		'border': borderWidth + ' solid ' + unselectedBorderColor,
 		'border-radius':'3px',
 		'display': 'block',
@@ -314,7 +314,7 @@ function applyBrowserBasedCss(){
 	});
 
 	// Indent all sub-menus
-	$j(".toc-menu-container  ul  li > ul").css({
+	$j('.toc-menu-container' + contentViewerIndex + '  ul  li > ul').css({
 		'margin':'1px 1px 1px 20px'
 	});
 
@@ -322,8 +322,8 @@ function applyBrowserBasedCss(){
 
 function replaceTextWithLinks(){
 	var innerText = '';
-	var numberOfLi = $j(".toc-menu-list > li").length;
-	var $currentLIElement = $j(".toc-menu-list > li");
+	var numberOfLi = $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list > li').length;
+	var $currentLIElement = $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list > li');
 	
 	for (var i = 1; i <= numberOfLi; i++){
 		var $temp = $currentLIElement.eq(i-1);
@@ -341,26 +341,26 @@ function replaceTextWithLinks(){
 
 function initMenu() {
 	//Handles first tier parents
-    $j('.toc-menu-list > li > a').click(function(e){ 		//When a parent link is clicked
+    $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list > li > a').click(function(e){ 		//When a parent link is clicked
 		e.preventDefault();
         if ($j(this).hasClass('open-menu')) {
 			loadPage($j(this).attr('href'), $j(this).attr('alt'), $j(this));
-			 $j('.open-menu').next().slideUp('normal')
-			 $j('.open-menu').removeClass('open-menu');
-			 $j('.sub-open-menu').next().slideUp('normal');
-			$j('.sub-open-menu').removeClass('sub-open-menu');
+			$j('.toc-menu-container' + contentViewerIndex + ' .open-menu').next().slideUp('normal')
+			$j('.toc-menu-container' + contentViewerIndex + ' .open-menu').removeClass('open-menu');
+			$j('.toc-menu-container' + contentViewerIndex + ' .sub-open-menu').next().slideUp('normal');
+			$j('.toc-menu-container' + contentViewerIndex + ' .sub-open-menu').removeClass('sub-open-menu');
 			return false;	// if we are trying to open what is already open, end, If this link has open-menu. Do nothing
 		}
 		
-        $j(".active-item").css({
+        $j('.toc-menu-container' + contentViewerIndex + ' .active-item').css({
 			'border': borderWidth + ' solid ' + unselectedBorderColor,
 			'background-color': unselectedBackgroundColor,
 			'color': unselectedTextColor
 		}).removeClass('active-item'); 	// clear active sub menu items
-        $j('.open-menu').next().slideUp('normal')
-        $j('.open-menu').removeClass('open-menu'); 	// if there is a reference to the previous item, close it
-		$j('.sub-open-menu').next().slideUp('normal');
-		$j('.sub-open-menu').removeClass('sub-open-menu');
+        $j('.toc-menu-container' + contentViewerIndex + ' .open-menu').next().slideUp('normal')
+        $j('.toc-menu-container' + contentViewerIndex + ' .open-menu').removeClass('open-menu'); 	// if there is a reference to the previous item, close it
+		$j('.toc-menu-container' + contentViewerIndex + ' .sub-open-menu').next().slideUp('normal');
+		$j('.toc-menu-container' + contentViewerIndex + ' .sub-open-menu').removeClass('sub-open-menu');
         $j(this).addClass('open-menu'); 		// add tracking class
 		$j(this).addClass('active-item'); 		//Tracking clicked item
 		$j(this).css({
@@ -374,7 +374,7 @@ function initMenu() {
     });
 
      // handle submenu item clicks
-    $j(".toc-menu-list a").hover (
+    $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list a').hover (
     	function(e){
 			e.preventDefault();
 			if ( ! $j(this).hasClass('active-item') ) {
@@ -400,12 +400,12 @@ function initMenu() {
 	); 
 
    // handle submenu item clicks
-    $j(".toc-menu-list ul > li > a").click (function(e){
+    $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list ul > li > a').click (function(e){
 		e.preventDefault();
 		if ($j(this).hasClass('sub-open-menu')) {
-			$j('.sub-open-menu').next().slideUp('normal');
-			$j('.sub-open-menu').removeClass('sub-open-menu');
-			$j(".active-item").css({
+			$j('.toc-menu-container' + contentViewerIndex + ' .sub-open-menu').next().slideUp('normal');
+			$j('.toc-menu-container' + contentViewerIndex + ' .sub-open-menu').removeClass('sub-open-menu');
+			$j('.toc-menu-container' + contentViewerIndex + ' .active-item').css({
 				'border': borderWidth + ' solid ' + unselectedBorderColor,
 				'background-color': unselectedBackgroundColor,
 				'color': unselectedTextColor
@@ -418,7 +418,7 @@ function initMenu() {
 			loadPage($j(this).attr('href'), $j(this).attr('alt'), $j(this));
 			return false;
 		} else if($j(this).hasClass('g-open-menu')) {
-			$j(".active-item").css({
+			$j('.toc-menu-container' + contentViewerIndex + ' .active-item').css({
 				'border': borderWidth + ' solid ' + unselectedBorderColor,
 				'background-color': unselectedBackgroundColor,
 				'color': unselectedTextColor
@@ -432,13 +432,13 @@ function initMenu() {
 			return false
 		}
 		
-		$j(".active-item").css({
+		$j('.toc-menu-container' + contentViewerIndex + ' .active-item').css({
 			'border': borderWidth + ' solid ' + unselectedBorderColor,
 			'background-color': unselectedBackgroundColor,
 			'color': unselectedTextColor
 		}).removeClass('active-item'); 	// clear active sub menu items
-        $j('.sub-open-menu').next().slideUp('normal');
-        $j('.sub-open-menu').removeClass('sub-open-menu');
+        $j('.toc-menu-container' + contentViewerIndex + ' .sub-open-menu').next().slideUp('normal');
+        $j('.toc-menu-container' + contentViewerIndex + ' .sub-open-menu').removeClass('sub-open-menu');
 		$j(this).addClass('sub-open-menu');
 		$j(this).parent().find('li a').addClass('g-open-menu');
 		$j(this)
@@ -452,8 +452,8 @@ function initMenu() {
         return false;
     }); 
 
-	$j('.toc-menu-list ul, div#pageLoader').hide();
-    $j('.toc-menu-list > li:first > a').click(); // click first item 
+	$j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list ul, div#pageLoader').hide();
+    $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list > li:first > a').click(); // click first item 
 } //initMenu
 
 $j(document).ready(function() {
@@ -505,10 +505,14 @@ $j(document).ready(function() {
 		borderWidth = '1px';
 	}
 
+	if (typeof contentViewerIndex === 'undefined') {
+		contentViewerIndex = '';
+	}
+
 	ContentViewerContainerContainer = null;
 	for (i=0; i < parentIframe.length; i++) {
-		if ( $j('#ContentViewerContainer', parentIframe[i].contentDocument)[0] != undefined) {
-			ContentViewerContainerContainer = $j('#ContentViewerContainer', parentIframe[i].contentDocument)[0];
+		if ( $j('#ContentViewerContainer' + contentViewerIndex, parentIframe[i].contentDocument)[0] != undefined) {
+			ContentViewerContainerContainer = $j('#ContentViewerContainer' + contentViewerIndex, parentIframe[i].contentDocument)[0];
 		}
 	}
 	if (ContentViewerContainerContainer == null) {
