@@ -49,14 +49,15 @@ var loadRequest = null;
  */
 window.jive = {};
 window.jive.widget = {};
-window.jive.widget.resizeMe=function(c){
-	$j(c, $j('#ContentViewerContainer' + contentViewerIndex, parentIframe[0].contentDocument)).each(function(){
-		var body = $j(this).contents().find("body");
-		$j(this).css({height:0+"px"});
+window.jive.widget.resizeMe=function(widgetID){
+	var widgetIframe = $j(widgetID, ContentViewerContainerContainer);
+	if (widgetIframe) {
+		var body = $j(widgetIframe).contents().find("body");
+		$j(widgetIframe).css({height:0+"px"});
 		if(body.length > 0){
-			$j(this).css({height:body[0].scrollHeight+"px"});
+			$j(widgetIframe).css({height:body[0].scrollHeight+"px"});
 		}
-	});
+	}
 	resizeMe();
 }
 
@@ -85,7 +86,17 @@ $j(function(){
 	$j = parent.$j;
 });
 
-// Load the hyperlink of the object clicked
+function setWidgetIframeHeight() {
+    parentIframe.each(function(){
+        if($j(this).contents().find('#ContentViewerContainer').length > 0){
+   			// subtract one pixel from the container width so the content does not have the right most pixel cut off
+   			ContentViewerContainerContainer.style.width = ($j(this).width() - 1)+'px';
+            return false;
+        }
+    });
+}
+
+// Load content based on the hyperlink of the object clicked
 function loadPage(page, null1, null2){
 	var newContent = "<div id='jive-widget-content' class='clearfix'>\n\t<div id='jive-body-layout-l'>\n\t\t<div class='jive-body-layout-l1'>\n\t\t\t<div style='display:block' id='jive-widget-container_1'>";
 	var refreshDelay = 150;
@@ -107,7 +118,7 @@ function loadPage(page, null1, null2){
 			url: page,			
 			success: function (data) {
 				if(data){
-					//console.log('found: ' + $j( data ).find(widget_content).length + ' : ' + $j( data ).find(content_activity_class).length + ' : ' + $j( data ).find(content_area_class).length + ' : ' + $j( data ).find(content_list_class).length + ' : ' + $j( data ).find(content_list_class2).length);
+					// Process the loaded content based on type...
 					if( $j( data ).find(widget_content).length ) {
 						// Container Overview pages
 						ContentViewerContainerContainer.innerHTML = $j( data ).find(widget_content).html();
@@ -226,6 +237,7 @@ function loadPage(page, null1, null2){
 	}
 } //loadPage 00BQK50Y55VXE79156B
 
+// Load in the TOC document
 function loadTOC() {
 	$j.ajax({
 		type: "GET",
@@ -244,6 +256,27 @@ function loadTOC() {
 	});
 } //loadTOC
 
+// Process te TOC document bullet list into a list we can make into a button menu
+function replaceTextWithLinks(){
+	var innerText = '';
+	var numberOfLi = $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list > li').length;
+	var $currentLIElement = $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list > li');
+	
+	for (var i = 1; i <= numberOfLi; i++){
+		var $temp = $currentLIElement.eq(i-1);
+		
+		if($temp.children('a').length > 0){
+			innerText = '';
+		} else {
+			innerText = "<a href='javascript:void(0)' _jive_internal='true'>" + $temp.clone().children().remove().end().text() + "</a>";
+			var $tempChildren = $temp.children().html();
+			$temp.html( innerText + '<ul>' + $tempChildren + '</ul>' );
+			innerText = '';
+		}
+	}
+} //replaceTextWithLinks
+
+// Format the TOC button menu based on the user's configuration
 function applyBrowserBasedCss(){
 
 	$j('.toc-menu-container' + contentViewerIndex + ' .toc-menu > ul').addClass('toc-menu-list');
@@ -320,25 +353,7 @@ function applyBrowserBasedCss(){
 
 } //applyBrowserBasedCss
 
-function replaceTextWithLinks(){
-	var innerText = '';
-	var numberOfLi = $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list > li').length;
-	var $currentLIElement = $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list > li');
-	
-	for (var i = 1; i <= numberOfLi; i++){
-		var $temp = $currentLIElement.eq(i-1);
-		
-		if($temp.children('a').length > 0){
-			innerText = '';
-		} else {
-			innerText = "<a href='javascript:void(0)' _jive_internal='true'>" + $temp.clone().children().remove().end().text() + "</a>";
-			var $tempChildren = $temp.children().html();
-			$temp.html( innerText + '<ul>' + $tempChildren + '</ul>' );
-			innerText = '';
-		}
-	}
-} //replaceTextWithLinks
-
+// Initialize the menu and set up the various click intercept functions
 function initMenu() {
 	//Handles first tier parents
     $j('.toc-menu-container' + contentViewerIndex + ' .toc-menu-list > li > a').click(function(e){ 		//When a parent link is clicked
@@ -457,58 +472,48 @@ function initMenu() {
 } //initMenu
 
 $j(document).ready(function() {
+	// Set any variables not initialized to a default value...
 	if (typeof tocLayout === 'undefined') {
 		tocLayout = 'vertical';
 	}
-
 	if (typeof unselectedTextColor === 'undefined') {
 		unselectedTextColor = '#069';
 	}
-
 	if (typeof unselectedBackgroundColor === 'undefined') {
 		unselectedBackgroundColor = '#ffffff';
 	}
-
 	if (typeof unselectedBorderColor === 'undefined') {
 		unselectedBorderColor = '#BDBDBD';
 	}
-
 	if (typeof hoverTextColor === 'undefined') {
 		hoverTextColor = '#069';
 	}
-
 	if (typeof hoverBackgroundColor === 'undefined') {
 		hoverBackgroundColor = '#ffffff';
 	}
-
 	if (typeof hoverBorderColor === 'undefined') {
 		hoverBorderColor = '#BDBDBD';
 	}
-
 	if (typeof selectedTextColor === 'undefined') {
 		selectedTextColor = '#069';
 	}
-
 	if (typeof selectedBackgroundColor === 'undefined') {
 		selectedBackgroundColor = '#f0f0f0';
 	}
-
 	if (typeof selectedBorderColor === 'undefined') {
 		selectedBorderColor = '#BDBDBD';
 	}
-
 	if (typeof fontSize === 'undefined') {
 		fontSize = '12px';
 	}
-
 	if (typeof borderWidth === 'undefined') {
 		borderWidth = '1px';
 	}
-
 	if (typeof contentViewerIndex === 'undefined') {
 		contentViewerIndex = '';
 	}
 
+	// The page can have many iFrames on it.  We need to loop through them iframes on the page and find the one that contains this Content Viewer...
 	ContentViewerContainerContainer = null;
 	for (i=0; i < parentIframe.length; i++) {
 		if ( $j('#ContentViewerContainer' + contentViewerIndex, parentIframe[i].contentDocument)[0] != undefined) {
@@ -520,4 +525,19 @@ $j(document).ready(function() {
 	} else {
 		loadTOC();
 	}
-}); // $j(document).ready function end
+
+	var window_resize_debounce = function(fn, timeout)
+	{
+		return function() {
+			if (windowResizeTimeoutID > -1) {
+				window.clearTimeout(windowResizeTimeoutID);
+			}
+			windowResizeTimeoutID = window.setTimeout(fn, timeout);
+		}
+	};
+
+	// Debounce the user resizing the window so that the resize only happens once the user has stopped resizing for 250ms
+	var window_resize = window_resize_debounce(function() { setWidgetIframeHeight(); }, 250);
+
+	// Capture the window resize event and call the debounce function.
+	$j(window).resize(setWidgetIframeHeight);}); // $j(document).ready function end
