@@ -85,6 +85,7 @@ window.onload = function() {
 $j(function(){
 	$j = parent.$j;
 });
+var $k = jQuery.noConflict();
 
 function setWidgetIframeHeight() {
     parentIframe.each(function(){
@@ -127,7 +128,15 @@ function loadPage(page, null1, null2){
 						ContentViewerContainerContainer.innerHTML = $j( data ).find(content_activity_class).html();
 					} else if ( data.search('viewerURL:   \"') > -1 ) {
 						// Content that has the document preview will have the preview iframe generated and shown
-						var viewerURL = data.substr(data.search('viewerURL:   \"') + 14);
+						// First, check if HTML5 preview is available...
+						var viewerURL = '';
+						if (data.search('htmlUrl:   \"') == -1) {
+							// HTML5 preview was not found, so get the Flash preview...
+							viewerURL = data.substr(data.search('viewerURL:   \"') + 14);
+						} else {
+							// Use the HTML5 preview...
+							viewerURL = data.substr(data.search('htmlUrl:   \"') + 12);
+						}
 						viewerURL = viewerURL.substr(0, viewerURL.search('"'));
 						if ( viewerURL.search("-1") > -1) {
 							ContentViewerContainerContainer.innerHTML = '<p><h1>Document has been deleted!</h1></p>';
@@ -141,7 +150,10 @@ function loadPage(page, null1, null2){
 						ContentViewerContainerContainer.innerHTML = album;
 					} else if ( $j( data ).find(content_area_class).length ) {
 						// Jive content
-						ContentViewerContainerContainer.innerHTML = $j( data ).find(content_area_class).html();
+						var contentPage = $j( data ).find(content_area_class).html();
+					// Remove the HREF from image tag anchors to prevent the Jive full size image preview from destroying the viewer
+						ContentViewerContainerContainer.innerHTML = contentPage;
+						$j('a[href*="JiveServlet"] > img.jive-image', ContentViewerContainerContainer).unwrap();
 					} else if ( $j( data ).find(content_list_class).length ) {
 						// Listing pages (like Content, Search, etc.)
 						ContentViewerContainerContainer.innerHTML = $j( data ).find(content_list_class).html();
@@ -231,9 +243,18 @@ function loadPage(page, null1, null2){
 		         page == window.parent._jive_base_absolute_url.replace('https:','http:') + '/'){
 		return false;
 	} else {
-		// The pae is external, so iframe it in
-		ContentViewerContainerContainer.innerHTML = '<iframe id="externalIframe" src="' + page + '" width="99%" height="800px;" />';
-		setTimeout(resizeMe, refreshDelay);
+		if (openExternalInNewTab) {
+			window.open(page);
+		} else {
+			if (page.indexOf('ribbitvideo') && page.indexOf('video.vp')) {
+				ContentViewerContainerContainer.innerHTML = '<iframe id="externalIframe" src="' + page.replace('video.vp', 'embed.vp') + '" width="99%" height="620px;" />';
+				setTimeout(resizeMe, refreshDelay);
+			} else {
+				// The pae is external, so iframe it in
+				ContentViewerContainerContainer.innerHTML = '<iframe id="externalIframe" src="' + page + '" width="99%" height="800px;" />';
+				setTimeout(resizeMe, refreshDelay);
+			}
+		}
 	}
 } //loadPage 00BQK50Y55VXE79156B
 
@@ -251,6 +272,10 @@ function loadTOC() {
 				replaceTextWithLinks();
 				applyBrowserBasedCss();
 				initMenu();
+				widgetBody = $k('body')[0];
+				$k(widgetBody).css({
+					'padding-left': '0px'
+				});
 			}
 		}
 	});
@@ -511,6 +536,9 @@ $j(document).ready(function() {
 	}
 	if (typeof contentViewerIndex === 'undefined') {
 		contentViewerIndex = '';
+	}
+	if (typeof openExternalInNewTab === 'undefined') {
+		openExternalInNewTab = false;
 	}
 
 	// The page can have many iFrames on it.  We need to loop through them iframes on the page and find the one that contains this Content Viewer...
